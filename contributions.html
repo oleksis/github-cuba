@@ -13225,17 +13225,15 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
         <span class="n">user</span><span class="p">[</span><span class="s1">&#39;followers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;followers&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCount&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;followers&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCount&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;followers&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">user</span><span class="p">[</span><span class="s1">&#39;following&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;following&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCount&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;following&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCount&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;following&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="n">user</span><span class="p">[</span><span class="s1">&#39;contributions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCommitContributions&#39;</span><span class="p">)</span> <span class="o">+</span> 
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalPullRequestContributions&#39;</span><span class="p">)</span> <span class="o">+</span> 
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalPullRequestReviewContributions&#39;</span><span class="p">)</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCommitContributions&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+             <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalPullRequestContributions&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+             <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalPullRequestReviewContributions&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">del</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">])</span>
 
@@ -13280,7 +13278,7 @@ div#notebook {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Top 10 of 964 GitHub Users from Cuba
-Generated at: 2020-08-21 04:49:37.771534 UTC
+Generated at: 2020-08-22 02:26:18.008107 UTC
 </pre>
 </div>
 </div>
@@ -13312,7 +13310,7 @@ Generated at: 2020-08-21 04:49:37.771534 UTC
       <td>Maikel Llamaret Heredia</td>
       <td>llamaret</td>
       <td>Cuba</td>
-      <td>4147</td>
+      <td>4166</td>
       <td>19</td>
       <td>18</td>
       <td>Creator of the SWL-X Project. Founder of Web &amp; Media Integrated Solutions. Currently co administrator of the Web of the Users Group of Free Technologies in Cuba</td>
@@ -13323,7 +13321,7 @@ Generated at: 2020-08-21 04:49:37.771534 UTC
       <td>Leynier Gutiérrez González</td>
       <td>leynier</td>
       <td>La Habana, Cuba</td>
-      <td>2743</td>
+      <td>2745</td>
       <td>41</td>
       <td>45</td>
       <td>Computer Science Student and Full Stack Developer</td>
@@ -13367,7 +13365,7 @@ Generated at: 2020-08-21 04:49:37.771534 UTC
       <td>Oleksis Fraga Menéndez</td>
       <td>oleksis</td>
       <td>Cuba</td>
-      <td>894</td>
+      <td>897</td>
       <td>1</td>
       <td>2</td>
       <td></td>
