@@ -15,3 +15,7 @@ GitHub define las contribuciones de la siguiente manera: [How GitHub count Contr
 * [GQL](https://github.com/graphql-python/gql)
 > ```$ pip install --pre gql ```
 
+## Uso
+
+### Open in Binder
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/oleksis/github-cuba/master?filepath=contributions.ipynb)
