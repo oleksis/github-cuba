@@ -13082,8 +13082,8 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
 
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;GH_GQL_API_TOKEN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;YOUR_TOKEN_HERE&#39;</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Setting environment variable: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;GH_GQL_API_TOKEN&#39;</span><span class="p">))</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GH_GQL_API_TOKEN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;YOUR_TOKEN_HERE&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setting environment variable: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GH_GQL_API_TOKEN&quot;</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13112,22 +13112,21 @@ div#notebook {
 <span class="n">TOP</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">users</span> <span class="o">=</span> <span class="p">[]</span>
 
+
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-    
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bearer &#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;GH_GQL_API_TOKEN&#39;</span><span class="p">)</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;bearer &quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GH_GQL_API_TOKEN&quot;</span><span class="p">)</span>
 
     <span class="c1"># Select your transport with a GitHub url endpoint</span>
     <span class="n">transport</span> <span class="o">=</span> <span class="n">AIOHTTPTransport</span><span class="p">(</span>
-        <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://api.github.com/graphql&quot;</span><span class="p">,</span>
-        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+        <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://api.github.com/graphql&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
     <span class="p">)</span>
 
     <span class="c1"># Using `async with` on the client will start a connection on the transport</span>
     <span class="c1"># and provide a `session` variable to execute queries on this connection</span>
     <span class="k">async</span> <span class="k">with</span> <span class="n">Client</span><span class="p">(</span>
-        <span class="n">transport</span><span class="o">=</span><span class="n">transport</span><span class="p">,</span>
-        <span class="n">fetch_schema_from_transport</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="n">transport</span><span class="o">=</span><span class="n">transport</span><span class="p">,</span> <span class="n">fetch_schema_from_transport</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
 
         <span class="c1"># Provide a GraphQL query</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">gql</span><span class="p">(</span>
@@ -13161,35 +13160,37 @@ div#notebook {
 <span class="sd">                }</span>
 <span class="sd">              }</span>
 <span class="sd">            }</span>
-<span class="sd">        &quot;&quot;&quot;</span><span class="p">)</span>
-        
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-          <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="s2">&quot;location:Cuba&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;USER&quot;</span><span class="p">,</span>
-          <span class="s2">&quot;numOfResults&quot;</span><span class="p">:</span> <span class="mi">20</span>
-        <span class="p">}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="s2">&quot;location:Cuba&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;USER&quot;</span><span class="p">,</span> <span class="s2">&quot;numOfResults&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">}</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">variable_values</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-        
-        <span class="n">result_users</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">,</span> <span class="p">[])</span>
-                        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="p">[])</span>
-        <span class="n">result_next</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pageInfo&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hasNextPage&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)</span>
-        
+
+        <span class="n">result_users</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="p">)</span>
+        <span class="n">result_next</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pageInfo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hasNextPage&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span>
+            <span class="k">else</span> <span class="kc">False</span>
+        <span class="p">)</span>
+
         <span class="k">while</span> <span class="n">result_next</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s2">&quot;nextPageCursor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pageInfo&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;endCursor&#39;</span><span class="p">)</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pageInfo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;endCursor&quot;</span><span class="p">)</span>
             <span class="p">)</span>
-            
+
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">variable_values</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-            <span class="n">result_users</span> <span class="o">+=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">result_next</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pageInfo&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hasNextPage&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        
+            <span class="n">result_users</span> <span class="o">+=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="n">result_next</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pageInfo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hasNextPage&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
         <span class="c1"># print(result)</span>
         <span class="k">global</span> <span class="n">users</span>
         <span class="n">users</span> <span class="o">=</span> <span class="n">result_users</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total GitHub Users from Cuba: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">))</span>
+
 
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
@@ -13208,7 +13209,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total GitHub Users from Cuba: 964
+<pre>Total GitHub Users from Cuba: 966
 </pre>
 </div>
 </div>
@@ -13224,42 +13225,48 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
-        <span class="n">user</span><span class="p">[</span><span class="s1">&#39;followers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;followers&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">user</span><span class="p">[</span><span class="s2">&quot;followers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;followers&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalCount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">user</span><span class="p">[</span><span class="s2">&quot;following&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;following&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalCount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">user</span><span class="p">[</span><span class="s2">&quot;contributions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalCommitContributions&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;totalPullRequestContributions&quot;</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="p">)</span>
+            <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="s2">&quot;totalPullRequestReviewContributions&quot;</span><span class="p">,</span> <span class="mi">0</span>
+            <span class="p">)</span>
         <span class="p">)</span>
-        <span class="n">user</span><span class="p">[</span><span class="s1">&#39;following&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;following&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCount&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="n">user</span><span class="p">[</span><span class="s1">&#39;contributions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalCommitContributions&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-             <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalPullRequestContributions&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-             <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;totalPullRequestReviewContributions&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="p">)</span>
-        <span class="k">del</span><span class="p">(</span><span class="n">user</span><span class="p">[</span><span class="s1">&#39;contributionsCollection&#39;</span><span class="p">])</span>
+        <span class="k">del</span> <span class="n">user</span><span class="p">[</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">]</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">users</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># df = df.reset_index(drop=True)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;contributions&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;contributions&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Top Ten Cuba</span>
-<span class="n">new_dtypes</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;followers&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
-    <span class="s1">&#39;following&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
-    <span class="s1">&#39;contributions&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span>
-<span class="p">}</span>
-<span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="se">\U0001F947</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\U0001F948</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\U0001F949</span><span class="s1">&#39;</span> <span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">TOP</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">new_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;followers&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="s2">&quot;following&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="s2">&quot;contributions&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">}</span>
+<span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\U0001F947</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\U0001F948</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\U0001F949</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">TOP</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
 <span class="n">df_top_ten</span> <span class="o">=</span> <span class="n">df</span><span class="p">[:</span><span class="n">TOP</span><span class="p">]</span>
 <span class="n">df_top_ten</span> <span class="o">=</span> <span class="n">df_top_ten</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">new_dtypes</span><span class="p">)</span>
+<span class="c1"># Clean</span>
+<span class="n">df_top_ten</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># Re-Order Columns</span>
 <span class="n">df_top_ten</span> <span class="o">=</span> <span class="n">df_top_ten</span><span class="p">[</span>
-    <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;login&#39;</span><span class="p">,</span> <span class="s1">&#39;location&#39;</span><span class="p">,</span> <span class="s1">&#39;contributions&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;followers&#39;</span><span class="p">,</span> <span class="s1">&#39;following&#39;</span><span class="p">,</span> <span class="s1">&#39;bio&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span><span class="p">]</span>
+    <span class="p">[</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;login&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;location&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;contributions&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;followers&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;following&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bio&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
 <span class="p">]</span>
-<span class="n">df_top_ten</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Top </span><span class="si">%s</span><span class="s1"> of </span><span class="si">%s</span><span class="s1"> GitHub Users from Cuba&#39;</span> <span class="o">%</span> <span class="p">(</span> <span class="n">TOP</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Generated at: </span><span class="si">%s</span><span class="s1"> UTC&#39;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
+<span class="n">df_top_ten</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top </span><span class="si">%s</span><span class="s2"> of </span><span class="si">%s</span><span class="s2"> GitHub Users from Cuba&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">TOP</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generated at: </span><span class="si">%s</span><span class="s2"> UTC&quot;</span> <span class="o">%</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">())</span>
 <span class="n">HTML</span><span class="p">(</span><span class="n">df_top_ten</span><span class="o">.</span><span class="n">to_html</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </pre></div>
 
@@ -13277,8 +13284,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Top 10 of 964 GitHub Users from Cuba
-Generated at: 2020-08-23 00:45:26.820993 UTC
+<pre>Top 10 of 966 GitHub Users from Cuba
+Generated at: 2020-08-25 05:43:02.500684 UTC
 </pre>
 </div>
 </div>
@@ -13310,7 +13317,7 @@ Generated at: 2020-08-23 00:45:26.820993 UTC
       <td>Maikel Llamaret Heredia</td>
       <td>llamaret</td>
       <td>Cuba</td>
-      <td>4190</td>
+      <td>4244</td>
       <td>19</td>
       <td>18</td>
       <td>Creator of the SWL-X Project. Founder of Web &amp; Media Integrated Solutions. Currently co administrator of the Web of the Users Group of Free Technologies in Cuba</td>
@@ -13321,7 +13328,7 @@ Generated at: 2020-08-23 00:45:26.820993 UTC
       <td>Leynier Gutiérrez González</td>
       <td>leynier</td>
       <td>La Habana, Cuba</td>
-      <td>2748</td>
+      <td>2757</td>
       <td>41</td>
       <td>45</td>
       <td>Computer Science Student and Full Stack Developer</td>
@@ -13329,69 +13336,69 @@ Generated at: 2020-08-23 00:45:26.820993 UTC
     </tr>
     <tr>
       <td>🥉</td>
+      <td>Yudivián Almeida Cruz</td>
+      <td>yudivian</td>
+      <td>La Habana, Cuba</td>
+      <td>1923</td>
+      <td>24</td>
+      <td>2</td>
+      <td></td>
+      <td>https://github.com/yudivian</td>
+    </tr>
+    <tr>
+      <td>4</td>
       <td>Phaser Editor 2D</td>
       <td>PhaserEditor2D</td>
       <td>Cuba</td>
-      <td>1603</td>
-      <td>28</td>
+      <td>1591</td>
+      <td>29</td>
       <td>28</td>
       <td>Phaser Editor 2D official account.\r\n\r\nIDE for HTML5 2D game development.</td>
       <td>https://github.com/PhaserEditor2D</td>
     </tr>
     <tr>
-      <td>4</td>
+      <td>5</td>
       <td>Guillermo</td>
       <td>wil92</td>
       <td>Cuba</td>
-      <td>1380</td>
+      <td>1383</td>
       <td>11</td>
       <td>19</td>
       <td>happy coding!</td>
       <td>https://github.com/wil92</td>
     </tr>
     <tr>
-      <td>5</td>
+      <td>6</td>
       <td>Luis Antonio Correa Leyva</td>
       <td>correaleyval</td>
       <td>Santiago de Cuba, Cuba</td>
-      <td>1116</td>
+      <td>1104</td>
       <td>34</td>
       <td>40</td>
       <td>Computer Scientist</td>
       <td>https://github.com/correaleyval</td>
     </tr>
     <tr>
-      <td>6</td>
+      <td>7</td>
       <td>Oleksis Fraga Menéndez</td>
       <td>oleksis</td>
       <td>Cuba</td>
-      <td>902</td>
+      <td>908</td>
       <td>1</td>
       <td>2</td>
-      <td></td>
+      <td>👨🏾‍💻 Computer Engineer</td>
       <td>https://github.com/oleksis</td>
     </tr>
     <tr>
-      <td>7</td>
+      <td>8</td>
       <td>Erich Garcia Cruz</td>
       <td>n3omaster</td>
       <td>Cuba</td>
-      <td>886</td>
+      <td>861</td>
       <td>13</td>
       <td>3</td>
       <td>PHP Developer, innovation lover, improvement lover, studying lover.</td>
       <td>https://github.com/n3omaster</td>
-    </tr>
-    <tr>
-      <td>8</td>
-      <td>Asiel Díaz Benítez</td>
-      <td>adbenitez</td>
-      <td>Cuba</td>
-      <td>855</td>
-      <td>20</td>
-      <td>15</td>
-      <td>Computer Scientist. Likes: bash, emacs, python, web, email, free/libre software, GNU project.</td>
-      <td>https://github.com/adbenitez</td>
     </tr>
     <tr>
       <td>9</td>
@@ -13406,14 +13413,14 @@ Generated at: 2020-08-23 00:45:26.820993 UTC
     </tr>
     <tr>
       <td>10</td>
-      <td>Marcos Antonio Maceo</td>
-      <td>stdevMac</td>
-      <td>Havana, Cuba</td>
-      <td>774</td>
-      <td>9</td>
-      <td>19</td>
-      <td></td>
-      <td>https://github.com/stdevMac</td>
+      <td>Asiel Díaz Benítez</td>
+      <td>adbenitez</td>
+      <td>Cuba</td>
+      <td>803</td>
+      <td>20</td>
+      <td>15</td>
+      <td>Computer Scientist. Likes: bash, emacs, python, web, email, free/libre software, GNU project.</td>
+      <td>https://github.com/adbenitez</td>
     </tr>
   </tbody>
 </table>

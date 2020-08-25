@@ -112,7 +112,7 @@ async def main():
                 del user["contributionsCollection"]
 
         df = pd.DataFrame(users)
-        df.dropna(inplace=True)
+        df.dropna(how="all", inplace=True)
         # df = df.reset_index(drop=True)
         df = df.sort_values(by="contributions", ascending=False)
 
@@ -126,6 +126,8 @@ async def main():
 
         df_top_ten = df[:TOP]
         df_top_ten = df_top_ten.astype(new_dtypes)
+        # Clean
+        df_top_ten.fillna("", inplace=True)
         # Re-Order Columns
         df_top_ten = df_top_ten[
             [
