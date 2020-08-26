@@ -3,6 +3,7 @@
 # %%
 import os
 from datetime import datetime
+from IPython.core.display import ProgressBar
 
 import numpy as np
 import pandas as pd
@@ -11,6 +12,22 @@ import asyncio
 
 
 TOP = 10
+
+
+def progress(percent=0, width=30):
+    "Print simple progress bar"
+    left = int(width * percent // 100)
+    right = width - left
+    print(
+        "\r[",
+        "=" * left,
+        " " * right,
+        "]",
+        f" {percent:.0f}%",
+        sep="",
+        end="",
+        flush=True,
+    )
 
 
 async def main():
@@ -65,29 +82,34 @@ async def main():
 
         params = {"query": "location:Cuba", "type": "USER", "numOfResults": 20}
 
+        print("Getting users...")
+
         result = await session.execute(query, variable_values=params)
 
-        result_users = (
-            result.get("search").get("nodes", []) if result.get("search") else []
-        )
-        result_next = (
-            result.get("search").get("pageInfo").get("hasNextPage", False)
-            if result.get("search")
-            else False
-        )
+        result_users = []
+        result_count = 0
+        result_next = False
+
+        if result.get("search"):
+            result_users = result.get("search").get("nodes", [])
+            result_count = result.get("search").get("userCount", 0)
+            result_next = result.get("search").get("pageInfo").get("hasNextPage", False)
 
         while result_next:
             params["nextPageCursor"] = (
                 result.get("search").get("pageInfo").get("endCursor")
             )
 
+            progress(len(result_users) * 100 / result_count)
+
             await asyncio.sleep(1)
             result = await session.execute(query, variable_values=params)
             result_users += result.get("search").get("nodes", [])
             result_next = result.get("search").get("pageInfo").get("hasNextPage", False)
+            progress(len(result_users) * 100 / result_count)
 
         users = result_users
-        print("Total GitHub Users from Cuba: %s" % len(users))
+        print("\nTotal GitHub Users from Cuba: %s" % len(users))
 
         try:
             assert len(users) > 0
