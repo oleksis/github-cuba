@@ -61,17 +61,17 @@ async def main():
                     login
                     location
                     bio
-                    url
+                    avatarUrl
                     followers {
                       totalCount
                     }
-                    following {
-                      totalCount
-                    }
                     contributionsCollection {
+                      contributionCalendar{
+                        totalContributions
+                      }
                       totalCommitContributions
                       totalPullRequestContributions
-                      totalPullRequestReviewContributions
+                      restrictedContributionsCount
                     }
                   }
                 }
@@ -119,30 +119,30 @@ async def main():
         for user in users:
             if user:
                 user["followers"] = user.get("followers").get("totalCount", 0)
-                user["following"] = user.get("following").get("totalCount", 0)
-                user["contributions"] = (
-                    user.get("contributionsCollection").get(
-                        "totalCommitContributions", 0
-                    )
-                    + user.get("contributionsCollection").get(
-                        "totalPullRequestContributions", 0
-                    )
-                    + user.get("contributionsCollection").get(
-                        "totalPullRequestReviewContributions", 0
-                    )
+                user["contributions"] = user.get("contributionsCollection").get(
+                    "contributionCalendar"
+                ).get("totalContributions", 0) - user.get(
+                    "contributionsCollection"
+                ).get(
+                    "restrictedContributionsCount", 0
+                )
+                user["commits"] = user.get("contributionsCollection").get(
+                    "totalCommitContributions", 0
+                ) + user.get("contributionsCollection").get(
+                    "totalPullRequestContributions", 0
                 )
                 del user["contributionsCollection"]
 
         df = pd.DataFrame(users)
         df.dropna(how="all", inplace=True)
         # df = df.reset_index(drop=True)
-        df = df.sort_values(by="contributions", ascending=False)
+        df = df.sort_values(by="commits", ascending=False)
 
         # Top Ten Cuba
         new_dtypes = {
             "followers": np.int64,
-            "following": np.int64,
             "contributions": np.int64,
+            "commits": np.int64,
         }
         position = ["\U0001F947", "\U0001F948", "\U0001F949"] + list(range(4, TOP + 1))
 
@@ -156,11 +156,11 @@ async def main():
                 "name",
                 "login",
                 "location",
+                "commits",
                 "contributions",
                 "followers",
-                "following",
                 "bio",
-                "url",
+                "avatarUrl",
             ]
         ]
         df_top_ten.insert(0, "#", position)
