@@ -13149,17 +13149,17 @@ div#notebook {
 <span class="sd">                    login</span>
 <span class="sd">                    location</span>
 <span class="sd">                    bio</span>
-<span class="sd">                    url</span>
+<span class="sd">                    avatarUrl</span>
 <span class="sd">                    followers {</span>
 <span class="sd">                      totalCount</span>
 <span class="sd">                    }</span>
-<span class="sd">                    following {</span>
-<span class="sd">                      totalCount</span>
-<span class="sd">                    }</span>
 <span class="sd">                    contributionsCollection {</span>
+<span class="sd">                      contributionCalendar{</span>
+<span class="sd">                        totalContributions</span>
+<span class="sd">                      }</span>
 <span class="sd">                      totalCommitContributions</span>
 <span class="sd">                      totalPullRequestContributions</span>
-<span class="sd">                      totalPullRequestReviewContributions</span>
+<span class="sd">                      restrictedContributionsCount</span>
 <span class="sd">                    }</span>
 <span class="sd">                  }</span>
 <span class="sd">                }</span>
@@ -13194,7 +13194,10 @@ div#notebook {
             <span class="n">progress</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
 
             <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">variable_values</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">variable_values</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+                <span class="k">continue</span>
             <span class="n">result_users</span> <span class="o">+=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
             <span class="n">pb</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_users</span><span class="p">)</span>
             <span class="n">progress</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
@@ -13224,8 +13227,8 @@ div#notebook {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Getting users...
-[============================================================] 968/968
-Total GitHub Users from Cuba: 968
+[============================================================] 975/975
+Total GitHub Users from Cuba: 975
 </pre>
 </div>
 </div>
@@ -13242,25 +13245,31 @@ Total GitHub Users from Cuba: 968
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
         <span class="n">user</span><span class="p">[</span><span class="s2">&quot;followers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;followers&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalCount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">user</span><span class="p">[</span><span class="s2">&quot;following&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;following&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalCount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">user</span><span class="p">[</span><span class="s2">&quot;contributions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalCommitContributions&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;totalPullRequestContributions&quot;</span><span class="p">,</span> <span class="mi">0</span>
-            <span class="p">)</span>
-            <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                <span class="s2">&quot;totalPullRequestReviewContributions&quot;</span><span class="p">,</span> <span class="mi">0</span>
-            <span class="p">)</span>
+        <span class="n">user</span><span class="p">[</span><span class="s2">&quot;contributions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;contributionCalendar&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;totalContributions&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;contributionsCollection&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;restrictedContributionsCount&quot;</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="n">user</span><span class="p">[</span><span class="s2">&quot;commits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;totalCommitContributions&quot;</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="p">)</span> <span class="o">+</span> <span class="n">user</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;totalPullRequestContributions&quot;</span><span class="p">,</span> <span class="mi">0</span>
         <span class="p">)</span>
         <span class="k">del</span> <span class="n">user</span><span class="p">[</span><span class="s2">&quot;contributionsCollection&quot;</span><span class="p">]</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">users</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># df = df.reset_index(drop=True)</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;contributions&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s2">&quot;commits&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Top Ten Cuba</span>
-<span class="n">new_dtypes</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;followers&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="s2">&quot;following&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="s2">&quot;contributions&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">}</span>
+<span class="n">new_dtypes</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;followers&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+    <span class="s2">&quot;contributions&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span>
+    <span class="s2">&quot;commits&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span>
+<span class="p">}</span>
 <span class="n">position</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="se">\U0001F947</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\U0001F948</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\U0001F949</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">TOP</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
 
 <span class="n">df_top_ten</span> <span class="o">=</span> <span class="n">df</span><span class="p">[:</span><span class="n">TOP</span><span class="p">]</span>
@@ -13273,11 +13282,11 @@ Total GitHub Users from Cuba: 968
         <span class="s2">&quot;name&quot;</span><span class="p">,</span>
         <span class="s2">&quot;login&quot;</span><span class="p">,</span>
         <span class="s2">&quot;location&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;commits&quot;</span><span class="p">,</span>
         <span class="s2">&quot;contributions&quot;</span><span class="p">,</span>
         <span class="s2">&quot;followers&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;following&quot;</span><span class="p">,</span>
         <span class="s2">&quot;bio&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;url&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;avatarUrl&quot;</span><span class="p">,</span>
     <span class="p">]</span>
 <span class="p">]</span>
 <span class="n">df_top_ten</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
@@ -13300,8 +13309,8 @@ Total GitHub Users from Cuba: 968
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Top 10 of 968 GitHub Users from Cuba
-Generated at: 2020-08-26 22:08:49.531982 UTC
+<pre>Top 10 of 975 GitHub Users from Cuba
+Generated at: 2020-09-03 00:02:24.914687 UTC
 </pre>
 </div>
 </div>
@@ -13320,11 +13329,11 @@ Generated at: 2020-08-26 22:08:49.531982 UTC
       <th>name</th>
       <th>login</th>
       <th>location</th>
+      <th>commits</th>
       <th>contributions</th>
       <th>followers</th>
-      <th>following</th>
       <th>bio</th>
-      <th>url</th>
+      <th>avatarUrl</th>
     </tr>
   </thead>
   <tbody>
@@ -13333,110 +13342,110 @@ Generated at: 2020-08-26 22:08:49.531982 UTC
       <td>Maikel Llamaret Heredia</td>
       <td>llamaret</td>
       <td>Cuba</td>
-      <td>4284</td>
+      <td>4442</td>
+      <td>4456</td>
       <td>19</td>
-      <td>18</td>
       <td>Creator of the SWL-X Project. Founder of Web &amp; Media Integrated Solutions. Currently co administrator of the Web of the Users Group of Free Technologies in Cuba</td>
-      <td>https://github.com/llamaret</td>
+      <td>https://avatars2.githubusercontent.com/u/27508028?u=b22f410e87d9cc1f91029193a72dc4791dda7b6b&amp;v=4</td>
     </tr>
     <tr>
       <td>🥈</td>
       <td>Leynier Gutiérrez González</td>
       <td>leynier</td>
       <td>La Habana, Cuba</td>
-      <td>2761</td>
+      <td>2705</td>
+      <td>2975</td>
       <td>41</td>
-      <td>45</td>
       <td>Computer Science Student and Full Stack Developer</td>
-      <td>https://github.com/leynier</td>
+      <td>https://avatars1.githubusercontent.com/u/36774373?u=60eee7ab14aada5aab8af6fbd11d14732750a7ab&amp;v=4</td>
     </tr>
     <tr>
       <td>🥉</td>
       <td>Yudivián Almeida Cruz</td>
       <td>yudivian</td>
       <td>La Habana, Cuba</td>
-      <td>1936</td>
+      <td>1997</td>
+      <td>1998</td>
       <td>24</td>
-      <td>2</td>
       <td></td>
-      <td>https://github.com/yudivian</td>
+      <td>https://avatars1.githubusercontent.com/u/5324359?v=4</td>
     </tr>
     <tr>
       <td>4</td>
       <td>Phaser Editor 2D</td>
       <td>PhaserEditor2D</td>
       <td>Cuba</td>
-      <td>1591</td>
+      <td>1563</td>
+      <td>1588</td>
       <td>29</td>
-      <td>28</td>
       <td>Phaser Editor 2D official account.\r\n\r\nIDE for HTML5 2D game development.</td>
-      <td>https://github.com/PhaserEditor2D</td>
+      <td>https://avatars1.githubusercontent.com/u/12187299?u=f6f0d58173deee2333a45f0f24f2145324da3047&amp;v=4</td>
     </tr>
     <tr>
       <td>5</td>
       <td>Guillermo</td>
       <td>wil92</td>
       <td>Cuba</td>
-      <td>1398</td>
+      <td>1361</td>
+      <td>1613</td>
       <td>11</td>
-      <td>19</td>
       <td>happy coding!</td>
-      <td>https://github.com/wil92</td>
+      <td>https://avatars3.githubusercontent.com/u/10768089?u=132076faeebea896962d63696ad8d8c1ddfdfab9&amp;v=4</td>
     </tr>
     <tr>
       <td>6</td>
       <td>Luis Antonio Correa Leyva</td>
       <td>correaleyval</td>
       <td>Santiago de Cuba, Cuba</td>
-      <td>1104</td>
+      <td>1103</td>
+      <td>1172</td>
       <td>34</td>
-      <td>40</td>
       <td>Computer Scientist</td>
-      <td>https://github.com/correaleyval</td>
+      <td>https://avatars2.githubusercontent.com/u/32603705?u=c1695bd968871f7671f04b327096d03e15d2b5f6&amp;v=4</td>
     </tr>
     <tr>
       <td>7</td>
-      <td>Oleksis Fraga Menéndez</td>
-      <td>oleksis</td>
+      <td>Alexis López Zubieta</td>
+      <td>azubieta</td>
       <td>Cuba</td>
-      <td>914</td>
-      <td>1</td>
-      <td>2</td>
-      <td>👨🏾‍💻 Computer Engineer</td>
-      <td>https://github.com/oleksis</td>
+      <td>1044</td>
+      <td>1096</td>
+      <td>54</td>
+      <td>Professional software engineer, open source developer and supporter. C/C++ and Python coder.</td>
+      <td>https://avatars1.githubusercontent.com/u/1138094?u=24a26ed2fe8db89192c0190a5e33eabff8356b4a&amp;v=4</td>
     </tr>
     <tr>
       <td>8</td>
-      <td>Erich Garcia Cruz</td>
-      <td>n3omaster</td>
+      <td>Oleksis Fraga Menéndez</td>
+      <td>oleksis</td>
       <td>Cuba</td>
-      <td>861</td>
-      <td>15</td>
-      <td>3</td>
-      <td>PHP Developer, innovation lover, improvement lover, studying lover.</td>
-      <td>https://github.com/n3omaster</td>
+      <td>941</td>
+      <td>1005</td>
+      <td>4</td>
+      <td>👨🏾‍💻 Computer Engineer</td>
+      <td>https://avatars1.githubusercontent.com/u/44526468?u=21a7f763d1b4de7f95101a3a3395fca5f8982e40&amp;v=4</td>
     </tr>
     <tr>
       <td>9</td>
-      <td>Asiel Díaz Benítez</td>
-      <td>adbenitez</td>
+      <td>Erich Garcia Cruz</td>
+      <td>n3omaster</td>
       <td>Cuba</td>
-      <td>804</td>
-      <td>20</td>
-      <td>15</td>
-      <td>Computer Scientist. Likes: bash, emacs, python, web, email, free/libre software, GNU project.</td>
-      <td>https://github.com/adbenitez</td>
+      <td>839</td>
+      <td>846</td>
+      <td>16</td>
+      <td>PHP Developer, innovation lover, improvement lover, studying lover.</td>
+      <td>https://avatars0.githubusercontent.com/u/10359180?u=e787c69b83f9d6db25feef9a95bd1c243ffa9410&amp;v=4</td>
     </tr>
     <tr>
       <td>10</td>
       <td>Jose Antonio Pereiro Morejon</td>
       <td>josePereiro</td>
       <td>Havana, Cuba</td>
-      <td>793</td>
+      <td>789</td>
+      <td>817</td>
       <td>0</td>
-      <td>1</td>
       <td></td>
-      <td>https://github.com/josePereiro</td>
+      <td>https://avatars3.githubusercontent.com/u/44244693?u=b721fe85c1ee1246aca1acb560cc1620d3d131ff&amp;v=4</td>
     </tr>
   </tbody>
 </table>

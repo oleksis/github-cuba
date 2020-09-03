@@ -103,7 +103,10 @@ async def main():
             progress(len(result_users) * 100 / result_count)
 
             await asyncio.sleep(1)
-            result = await session.execute(query, variable_values=params)
+            try:
+                result = await session.execute(query, variable_values=params)
+            except asyncio.exceptions.TimeoutError:
+                continue
             result_users += result.get("search").get("nodes", [])
             result_next = result.get("search").get("pageInfo").get("hasNextPage", False)
             progress(len(result_users) * 100 / result_count)
