@@ -13,6 +13,15 @@ import asyncio
 
 TOP = 10
 
+TOKEN = "bearer " + os.getenv("GH_GQL_API_TOKEN")
+
+# Select your transport with a GitHub url endpoint
+transport = AIOHTTPTransport(
+    url="https://api.github.com/graphql", headers={"Authorization": TOKEN}
+)
+
+client = Client(transport=transport, fetch_schema_from_transport=True,)
+
 
 def progress(percent=0, width=30):
     "Print simple progress bar"
@@ -32,19 +41,9 @@ def progress(percent=0, width=30):
 
 async def main():
 
-    token = "bearer " + os.getenv("GH_GQL_API_TOKEN")
-
-    # Select your transport with a GitHub url endpoint
-    transport = AIOHTTPTransport(
-        url="https://api.github.com/graphql", headers={"Authorization": token}
-    )
-
     # Using `async with` on the client will start a connection on the transport
     # and provide a `session` variable to execute queries on this connection
-    async with Client(
-        transport=transport, fetch_schema_from_transport=True,
-    ) as session:
-
+    async with client as session:
         # Provide a GraphQL query
         query = gql(
             """
@@ -84,32 +83,32 @@ async def main():
 
         print("Getting users...")
 
-        result = await session.execute(query, variable_values=params)
-
         result_users = []
         result_count = 0
-        result_next = False
-
-        if result.get("search"):
-            result_users = result.get("search").get("nodes", [])
-            result_count = result.get("search").get("userCount", 0)
-            result_next = result.get("search").get("pageInfo").get("hasNextPage", False)
+        result_next = True
+        first = True
+        pb = ProgressBar(result_count)
 
         while result_next:
-            params["nextPageCursor"] = (
-                result.get("search").get("pageInfo").get("endCursor")
-            )
-
-            progress(len(result_users) * 100 / result_count)
-
-            await asyncio.sleep(1)
             try:
                 result = await session.execute(query, variable_values=params)
             except asyncio.exceptions.TimeoutError:
                 continue
+
             result_users += result.get("search").get("nodes", [])
+            result_count = result.get("search").get("userCount", 0)
+
+            if first:
+                pb.total = result_count
+                first = False
+
+            pb._progress = len(result_users)
             result_next = result.get("search").get("pageInfo").get("hasNextPage", False)
+            params["nextPageCursor"] = (
+                result.get("search").get("pageInfo").get("endCursor")
+            )
             progress(len(result_users) * 100 / result_count)
+            await asyncio.sleep(1)
 
         users = result_users
         print("\nTotal GitHub Users from Cuba: %s" % len(users))

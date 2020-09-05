@@ -13112,6 +13112,17 @@ div#notebook {
 <span class="n">TOP</span> <span class="o">=</span> <span class="mi">10</span>
 <span class="n">users</span> <span class="o">=</span> <span class="p">[]</span>
 
+<span class="n">TOKEN</span> <span class="o">=</span> <span class="s2">&quot;bearer &quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GH_GQL_API_TOKEN&quot;</span><span class="p">)</span>
+
+<span class="c1"># Select your transport with a GitHub url endpoint</span>
+<span class="n">transport</span> <span class="o">=</span> <span class="n">AIOHTTPTransport</span><span class="p">(</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://api.github.com/graphql&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">TOKEN</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span>
+    <span class="n">transport</span><span class="o">=</span><span class="n">transport</span><span class="p">,</span> <span class="n">fetch_schema_from_transport</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">progress</span><span class="p">(</span><span class="n">pb</span><span class="p">):</span>
   <span class="s2">&quot;Display progress bar Ipython&quot;</span>
@@ -13120,19 +13131,9 @@ div#notebook {
 
 <span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
 
-    <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;bearer &quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;GH_GQL_API_TOKEN&quot;</span><span class="p">)</span>
-
-    <span class="c1"># Select your transport with a GitHub url endpoint</span>
-    <span class="n">transport</span> <span class="o">=</span> <span class="n">AIOHTTPTransport</span><span class="p">(</span>
-        <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://api.github.com/graphql&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
-    <span class="p">)</span>
-
     <span class="c1"># Using `async with` on the client will start a connection on the transport</span>
     <span class="c1"># and provide a `session` variable to execute queries on this connection</span>
-    <span class="k">async</span> <span class="k">with</span> <span class="n">Client</span><span class="p">(</span>
-        <span class="n">transport</span><span class="o">=</span><span class="n">transport</span><span class="p">,</span> <span class="n">fetch_schema_from_transport</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-
+    <span class="k">async</span> <span class="k">with</span> <span class="n">client</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="c1"># Provide a GraphQL query</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">gql</span><span class="p">(</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -13172,36 +13173,32 @@ div#notebook {
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Getting users...&quot;</span><span class="p">)</span>
 
-        <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">variable_values</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-
         <span class="n">result_users</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">result_count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">result_next</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">result_next</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">pb</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">result_count</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">):</span>
-            <span class="n">result_users</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">result_count</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;userCount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">pb</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">result_count</span><span class="p">)</span>
-            <span class="n">pb</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_users</span><span class="p">)</span>
-            <span class="n">result_next</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pageInfo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hasNextPage&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-        
         <span class="k">while</span> <span class="n">result_next</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;nextPageCursor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pageInfo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;endCursor&quot;</span><span class="p">)</span>
-            <span class="p">)</span>
-            
-            <span class="n">progress</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
-
-            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">variable_values</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
                 <span class="k">continue</span>
+            
             <span class="n">result_users</span> <span class="o">+=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="p">[])</span>
-            <span class="n">pb</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_users</span><span class="p">)</span>
-            <span class="n">progress</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
+            <span class="n">result_count</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;userCount&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                <span class="n">pb</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="n">result_count</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="n">pb</span><span class="o">.</span><span class="n">_progress</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result_users</span><span class="p">)</span>
             <span class="n">result_next</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pageInfo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hasNextPage&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;nextPageCursor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;search&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pageInfo&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;endCursor&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">progress</span><span class="p">(</span><span class="n">pb</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># print(result)</span>
         <span class="k">global</span> <span class="n">users</span>
@@ -13227,8 +13224,8 @@ div#notebook {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Getting users...
-[============================================================] 975/975
-Total GitHub Users from Cuba: 975
+[============================================================] 973/973
+Total GitHub Users from Cuba: 973
 </pre>
 </div>
 </div>
@@ -13309,8 +13306,8 @@ Total GitHub Users from Cuba: 975
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Top 10 of 975 GitHub Users from Cuba
-Generated at: 2020-09-03 00:02:24.914687 UTC
+<pre>Top 10 of 973 GitHub Users from Cuba
+Generated at: 2020-09-05 04:37:38.860952 UTC
 </pre>
 </div>
 </div>
@@ -13342,8 +13339,8 @@ Generated at: 2020-09-03 00:02:24.914687 UTC
       <td>Maikel Llamaret Heredia</td>
       <td>llamaret</td>
       <td>Cuba</td>
-      <td>4442</td>
-      <td>4456</td>
+      <td>4493</td>
+      <td>4507</td>
       <td>19</td>
       <td>Creator of the SWL-X Project. Founder of Web &amp; Media Integrated Solutions. Currently co administrator of the Web of the Users Group of Free Technologies in Cuba</td>
       <td>https://avatars2.githubusercontent.com/u/27508028?u=b22f410e87d9cc1f91029193a72dc4791dda7b6b&amp;v=4</td>
@@ -13353,9 +13350,9 @@ Generated at: 2020-09-03 00:02:24.914687 UTC
       <td>Leynier Gutiérrez González</td>
       <td>leynier</td>
       <td>La Habana, Cuba</td>
-      <td>2705</td>
-      <td>2975</td>
-      <td>41</td>
+      <td>2713</td>
+      <td>2983</td>
+      <td>42</td>
       <td>Computer Science Student and Full Stack Developer</td>
       <td>https://avatars1.githubusercontent.com/u/36774373?u=60eee7ab14aada5aab8af6fbd11d14732750a7ab&amp;v=4</td>
     </tr>
@@ -13364,8 +13361,8 @@ Generated at: 2020-09-03 00:02:24.914687 UTC
       <td>Yudivián Almeida Cruz</td>
       <td>yudivian</td>
       <td>La Habana, Cuba</td>
-      <td>1997</td>
-      <td>1998</td>
+      <td>2012</td>
+      <td>2013</td>
       <td>24</td>
       <td></td>
       <td>https://avatars1.githubusercontent.com/u/5324359?v=4</td>
@@ -13419,9 +13416,9 @@ Generated at: 2020-09-03 00:02:24.914687 UTC
       <td>Oleksis Fraga Menéndez</td>
       <td>oleksis</td>
       <td>Cuba</td>
-      <td>941</td>
-      <td>1005</td>
-      <td>4</td>
+      <td>950</td>
+      <td>1018</td>
+      <td>3</td>
       <td>👨🏾‍💻 Computer Engineer</td>
       <td>https://avatars1.githubusercontent.com/u/44526468?u=21a7f763d1b4de7f95101a3a3395fca5f8982e40&amp;v=4</td>
     </tr>
@@ -13430,8 +13427,8 @@ Generated at: 2020-09-03 00:02:24.914687 UTC
       <td>Erich Garcia Cruz</td>
       <td>n3omaster</td>
       <td>Cuba</td>
-      <td>839</td>
-      <td>846</td>
+      <td>847</td>
+      <td>854</td>
       <td>16</td>
       <td>PHP Developer, innovation lover, improvement lover, studying lover.</td>
       <td>https://avatars0.githubusercontent.com/u/10359180?u=e787c69b83f9d6db25feef9a95bd1c243ffa9410&amp;v=4</td>
@@ -13441,8 +13438,8 @@ Generated at: 2020-09-03 00:02:24.914687 UTC
       <td>Jose Antonio Pereiro Morejon</td>
       <td>josePereiro</td>
       <td>Havana, Cuba</td>
-      <td>789</td>
-      <td>817</td>
+      <td>790</td>
+      <td>819</td>
       <td>0</td>
       <td></td>
       <td>https://avatars3.githubusercontent.com/u/44244693?u=b721fe85c1ee1246aca1acb560cc1620d3d131ff&amp;v=4</td>
