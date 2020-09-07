@@ -11,7 +11,7 @@ from gql import gql, Client, AIOHTTPTransport
 import asyncio
 
 
-TOP = 10
+TOP = 100
 
 TOKEN = "bearer " + os.getenv("GH_GQL_API_TOKEN")
 
